@@ -1,10 +1,10 @@
 - name: Install dependencies
   pip:
     name: pyapi-gitlab
-    
+
 - name: Open session
   uri:
-    url: http://localhost/api/v3/session
+    url: http://{{ gl_url }}/api/v3/session
     method: POST
     body: "login={{ gl_username }}&password={{ gl_password }}"
     status_code: 201

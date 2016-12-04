@@ -1,6 +1,6 @@
 - name: Dowanload runner page
   get_url:
-    url: http://localhost/admin/runners
+    url: http://{{ gl_url }}/admin/runners
     dest: /tmp/runnerpage.html
     headers: "PRIVATE-TOKEN: {{ session.json.private_token }}"
     force: true
@@ -10,6 +10,7 @@
     grep -o '<code id="runners-token">.*</code>' /tmp/runnerpage.html |
     sed 's/\(<code id="runners-token">\|<\/code>\)//g'
   register: tokenparse
+  changed_when: false
 
 - name: Set token
   set_fact:
@@ -34,3 +35,4 @@
     2>&1
   register: result
   failed_when: "'Runner registered successfully.' not in result.stdout"
+  changed_when: true

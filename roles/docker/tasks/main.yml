@@ -1,46 +1,48 @@
-    - name: Install dependencies
-      apt:
-        name: "{{ item }}"
-      with_items:
-        - python-dev
-        - python-setuptools
+- name: Install dependencies
+  apt:
+    name: "{{ item }}"
+  with_items:
+    - python-dev
+    - python-setuptools
 
-    - name: Install prerequisites
-      pip:
-        name: docker-py
-        state: latest
+- name: Install prerequisites
+  pip:
+    name: docker-py>=1.7.0
 
-    - name: Pull images
-      docker_image:
-        name: "gitlab/{{ item }}"
-      with_items:
-        - "gitlab-runner"
-        - "gitlab-ce"
+- name: Pull images
+  docker_image:
+    name: "gitlab/{{ item }}"
+  with_items:
+    - "gitlab-runner"
+    - "gitlab-ce"
 
-    - name: Start Gitlab
-      docker_container:
-        hostname: gitlab
-        name: gitlab
-        state: started
-        image: gitlab/gitlab-ce
-        restart_policy: always
-        env:
-          GITLAB_ROOT_PASSWORD: "{{ gl_password }}"
-        ports:
-          - "80:80"
-          - "443:443"
-          - "2222:22"
+- name: Start Gitlab
+  docker_container:
+    hostname: gitlab
+    name: gitlab
+    state: started
+    image: gitlab/gitlab-ce
+    restart_policy: always
+    env:
+      GITLAB_ROOT_PASSWORD: "{{ gl_password }}"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "2222:22"
 
-    - name: Start Gitlab CI Runner
-      docker_container:
-        hostname: gitlabcirunner
-        name: gitlab-runner
-        state: started
-        image: gitlab/gitlab-runner
-        restart_policy: always
-        volumes:
-          - "/var/run/docker.sock:/var/run/docker.sock"
-        links:
-          - "gitlab:gitlab"
+- name: Start Gitlab CI Runner
+  docker_container:
+    hostname: gitlabcirunner
+    name: gitlab-runner
+    state: started
+    image: gitlab/gitlab-runner
+    restart_policy: always
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    links:
+      - "gitlab:gitlab"
 
-    - wait_for: port=80 delay=120
+- name: Wait for Gitlab to start
+  wait_for:
+    port: 80
+    delay: 120
