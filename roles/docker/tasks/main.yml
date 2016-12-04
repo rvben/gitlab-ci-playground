@@ -4,6 +4,15 @@
   with_items:
     - python-dev
     - python-setuptools
+  when: ansible_os_family == "Debian"
+
+- name: Install dependencies
+  yum:
+    name: "{{ item }}"
+  with_items:
+    - python-devel
+    - python-setuptools
+  when: ansible_os_family == "Redhat"
 
 - name: Install prerequisites
   pip:
