@@ -1,0 +1,39 @@
+- name: Open session
+  uri:
+    url: http://localhost/api/v3/session
+    method: POST
+    body: "login={{ gl_username }}&password={{ gl_password }}"
+    status_code: 201
+  register: session
+
+- name: Create new project
+  uri:
+    method: POST
+    url: http://localhost/api/v3/projects?name={{ project_name }}
+    status_code: 201, 400
+    headers:
+      PRIVATE-TOKEN: "{{ session.json.private_token }}"
+  register: response
+  changed_when: response.status == 201
+  failed_when: response.status > 400
+
+- name: Create file
+  uri:
+    url: 'http://{{ gl_url }}/api/v3/projects/1/repository/files'
+    method: POST
+    headers:
+      PRIVATE-TOKEN: "{{ session.json.private_token }}"
+    body:
+      file_path: .gitlab-ci.yml
+      branch_name: master
+      author_email: root@gitlab
+      author_name: Administrator
+      content: |
+        image: alpine:latest
+        test:
+          stage: test
+          script:
+          - echo "Hello world"
+      commit_message: Create CI file
+    body_format: json
+    status_code: 201

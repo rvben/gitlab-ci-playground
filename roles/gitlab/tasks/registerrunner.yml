@@ -1,0 +1,36 @@
+- name: Dowanload runner page
+  get_url:
+    url: http://localhost/admin/runners
+    dest: /tmp/runnerpage.html
+    headers: "PRIVATE-TOKEN: {{ session.json.private_token }}"
+    force: true
+
+- name: Get token
+  shell: >
+    grep -o '<code id="runners-token">.*</code>' /tmp/runnerpage.html |
+    sed 's/\(<code id="runners-token">\|<\/code>\)//g'
+  register: tokenparse
+
+- name: Set token
+  set_fact:
+    token: "{{ tokenparse.stdout }}"
+
+- name: Get Gitlab Info
+  set_fact:
+    gitlabinfo: "{{ lookup('pipe','docker inspect gitlab') }}"
+
+- name: Start and Register Gitlab CI Runner
+  shell: >
+    docker exec
+    gitlab-runner
+    gitlab-ci-multi-runner register -n
+    --url http://{{ gitlabinfo[0].NetworkSettings.IPAddress }}/
+    --registration-token {{ token }}
+    --tag-list test
+    --description testrunner
+    --executor docker
+    --docker-image alpine:latest
+    --docker-extra-hosts gitlab:{{ gitlabinfo[0].NetworkSettings.IPAddress }}
+    2>&1
+  register: result
+  failed_when: "'Runner registered successfully.' not in result.stdout"
