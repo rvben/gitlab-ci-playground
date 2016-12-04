@@ -1,5 +1,7 @@
 ## Gitlab CI Playground
-Set up a Gitlab CI playground with one command, using Ansible and Docker.
+[![Build Status](https://travis-ci.org/rjongejan/gitlab-ci-playground.svg?branch=master)](https://travis-ci.org/rjongejan/gitlab-ci-playground)  
+Set up a Gitlab CI playground with one command, using Ansible and Docker.  
+
 
 ### Prerequisites
 Ansible
