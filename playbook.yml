@@ -1,12 +1,13 @@
 ---
 - name: Setup Gitlab with Gitlab-CI-runner
   hosts: localhost
-  gather_facts: false
+  gather_facts: true
   vars:
-    gl_url: localhost
+    gl_hostname: gitlab.local
     gl_username: root
     gl_password: password
     project_name: hello-world
+
   roles:
     - docker
     - gitlab

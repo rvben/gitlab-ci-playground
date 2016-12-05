@@ -1,6 +1,6 @@
 - name: Open session
   uri:
-    url: http://{{ gl_url }}/api/v3/session
+    url: http://{{ gl_hostname }}/api/v3/session
     method: POST
     body: "login={{ gl_username }}&password={{ gl_password }}"
     status_code: 201

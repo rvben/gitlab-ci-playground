@@ -4,8 +4,8 @@ Set up a Gitlab CI playground with one command, using Ansible and Docker.
 
 
 ### Prerequisites
-Ansible
-Docker
+- Ansible
+- Docker
 
 ### Description
 This project provides an easy way to create a local playground to experiment with Gitlab CI.  
@@ -16,8 +16,8 @@ The Runner is so configured that it will spawn a sibling container, so you don't
 
 
 ### Defaults
+The url to access the local gitlab instance is: http://gitlab.local/
 By default, the username and password are: root / password.
-
 When you start the playground, it creates an example 'hello-world'-project with an example .gitlab-ci.yml file.
 
 

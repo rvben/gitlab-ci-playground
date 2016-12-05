@@ -27,7 +27,7 @@
 
 - name: Start Gitlab
   docker_container:
-    hostname: gitlab
+    hostname: "{{ gl_hostname }}"
     name: gitlab
     state: started
     image: gitlab/gitlab-ce
@@ -55,3 +55,17 @@
   wait_for:
     port: 80
     delay: 120
+
+- name: Get Gitlab Info
+  set_fact:
+    gitlabinfo: "{{ lookup('pipe','docker inspect gitlab') }}"
+
+- name: Set Gitlab IP
+  set_fact:
+    gl_ip: "{{ gitlabinfo[0].NetworkSettings.IPAddress }}"
+
+- name: Set gitlab hostname in /etc/hosts
+  lineinfile:
+    dest: /etc/hosts
+    regexp: ' {{ gl_hostname }}'
+    line: '{{ gl_ip }} {{ gl_hostname }}'

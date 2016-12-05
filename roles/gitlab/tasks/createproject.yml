@@ -1,6 +1,6 @@
 - name: Open session
   uri:
-    url: http://{{ gl_url }}/api/v3/session
+    url: http://{{ gl_hostname }}/api/v3/session
     method: POST
     body: "login={{ gl_username }}&password={{ gl_password }}"
     status_code: 201
@@ -9,7 +9,7 @@
 - name: Create new project
   uri:
     method: POST
-    url: http://{{ gl_url }}/api/v3/projects?name={{ project_name }}
+    url: http://{{ gl_hostname }}/api/v3/projects?name={{ project_name }}
     status_code: 201, 400
     headers:
       PRIVATE-TOKEN: "{{ session.json.private_token }}"
@@ -19,7 +19,7 @@
 
 - name: Create file
   uri:
-    url: 'http://{{ gl_url }}/api/v3/projects/1/repository/files'
+    url: 'http://{{ gl_hostname }}/api/v3/projects/1/repository/files'
     method: POST
     headers:
       PRIVATE-TOKEN: "{{ session.json.private_token }}"
